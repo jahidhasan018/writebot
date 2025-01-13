@@ -1,0 +1,39 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        # Disable MultiViews and Indexes for better routing and security
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    # Enable URL rewriting
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Front Controller (index.php)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# Security: Deny access to the .env file
+<Files .env>
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Disable X-Frame-Options header if not needed
+# Uncomment only if your application requires it
+# Header always unset X-Frame-Options
+
+# BEGIN LiteSpeed (if using LiteSpeed, otherwise this block is optional)
+<IfModule Litespeed>
+    SetEnv noabort 1
+</IfModule>
+# END LiteSpeed
